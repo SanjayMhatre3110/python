@@ -1,7 +1,16 @@
 # Database Normalization Walkthrough
 
 ## Unnormalized Form (UNF)
-Data is stored with repeating groups and multi-valued fields.
+**Description:**  
+UNF is the raw form of data where there is no structure or normalization applied. Data may contain repeating groups, multiple values in a single field, and lacks consistency.
+
+**Key Characteristics:**
+- Repeating groups allowed
+- Multi-valued attributes exist
+- Difficult to query and maintain
+
+**Difference from others:**  
+This is the starting point — all other normal forms improve upon UNF by reducing redundancy and improving structure.
 
 | OrderID | CustomerName | CustomerAddress | Products                  | TotalAmount |
 |---------|--------------|-----------------|---------------------------|-------------|
@@ -12,7 +21,17 @@ Data is stored with repeating groups and multi-valued fields.
 ---
 
 ## First Normal Form (1NF)
-Eliminate multi-valued attributes. Each row contains atomic values.
+**Description:**  
+1NF ensures that each column contains atomic (indivisible) values and each record is unique. It removes repeating groups and multi-valued attributes.
+
+**Key Characteristics:**
+- No multi-valued attributes
+- Each field contains only one value
+- Rows are uniquely identifiable
+
+**Difference from UNF:**  
+- Eliminates repeating groups  
+- Converts multi-valued fields into multiple rows  
 
 | OrderID | CustomerName | CustomerAddress | Product    | TotalAmount |
 |---------|--------------|-----------------|------------|-------------|
@@ -26,7 +45,17 @@ Eliminate multi-valued attributes. Each row contains atomic values.
 ---
 
 ## Second Normal Form (2NF)
-Remove partial dependency. Split customer info into a separate table.
+**Description:**  
+2NF removes partial dependencies. This means that non-key attributes must depend on the entire primary key, not just part of it (important when using composite keys).
+
+**Key Characteristics:**
+- Must already be in 1NF
+- No partial dependency on composite keys
+- Data split into related tables
+
+**Difference from 1NF:**  
+- Removes redundancy caused by partial dependency  
+- Separates data into multiple tables (e.g., Customer and Order)
 
 **Customer Table**
 | Customer_ID | CustomerName | CustomerAddress |
@@ -48,7 +77,17 @@ Remove partial dependency. Split customer info into a separate table.
 ---
 
 ## Third Normal Form (3NF)
-Remove transitive dependency. Create a separate Product table and split Order Header vs Order Details.
+**Description:**  
+3NF removes transitive dependencies, meaning non-key attributes should not depend on other non-key attributes.
+
+**Key Characteristics:**
+- Must already be in 2NF
+- No transitive dependencies
+- Better logical data separation
+
+**Difference from 2NF:**  
+- Eliminates indirect relationships between non-key attributes  
+- Introduces more refined tables (e.g., Product, Order Header, Order Details)
 
 **Customer Table**
 | Customer_ID | CustomerName | CustomerAddress |
@@ -87,8 +126,17 @@ Remove transitive dependency. Create a separate Product table and split Order He
 ---
 
 ## Boyce-Codd Normal Form (BCNF)
-Ensure every determinant is a candidate key.  
-Example refinement: if one product is always supplied by one vendor, then `Product → Vendor` is a dependency. We split vendors into their own table.
+**Description:**  
+BCNF is a stricter version of 3NF. It ensures that every determinant (attribute that determines another) is a candidate key.
+
+**Key Characteristics:**
+- Must already be in 3NF
+- Every functional dependency must have a candidate key as determinant
+- Handles edge cases not covered by 3NF
+
+**Difference from 3NF:**  
+- Stricter rule for functional dependencies  
+- Removes anomalies caused by non-candidate key determinants  
 
 **Vendor Table**
 | Vendor_ID | VendorName | ContactInfo |
@@ -109,8 +157,11 @@ Example refinement: if one product is always supplied by one vendor, then `Produ
 ---
 
 # Summary
-- **UNF:** Raw data with repeating groups.  
-- **1NF:** Atomic values, no multi-valued fields.  
-- **2NF:** Remove partial dependencies (split customers).  
-- **3NF:** Remove transitive dependencies (split products, order header/details).  
-- **BCNF:** Ensure every determinant is a candidate key (split vendors).  
+
+| Form | Focus | Main Improvement |
+|------|------|------------------|
+| UNF  | Raw Data | No structure |
+| 1NF  | Atomicity | Removes repeating groups |
+| 2NF  | Full Dependency | Removes partial dependency |
+| 3NF  | Transitive Dependency | Removes indirect relationships |
+| BCNF | Strong Dependency Rules | Ensures all determinants are candidate keys |
